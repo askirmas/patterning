@@ -11,8 +11,6 @@ function myIt(flags: Parameters<typeof regexpize>[1]) {
   return it(
     flags === undefined
     ? 'undefined'
-    : typeof flags === 'string'
-    ? flags
     : JSON.stringify(flags), () => {
       const result = regexpize(str, flags)
       expect(regexpize(str, flags)).toStrictEqual(result) 
