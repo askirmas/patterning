@@ -13,6 +13,6 @@ export type RegStrParams = Partial<{
 export type KeyParameters = {
   prefix: string
   postfix: string
-  /** @default "[a-zA-Z_][a-zA-Z0-9_]*" */
+  /** @default "[a-zA-Z_$][a-zA-Z0-9_$]*" */
   key?: string
 }
