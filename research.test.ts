@@ -1,6 +1,3 @@
-const dateSchema = "(?<year>[0-9]*)-(?<month>[0-9]*)-(?<day>[0-9]*)"
-, str = "2019-04-30"
-
 const instance = "a/b/c"
 describe(instance, () => {
   const cases: [string, object][] = [
@@ -11,6 +8,10 @@ describe(instance, () => {
     [
       "(?<x>[^/]*)/(?<y>[^/]*)", {
       "x": "a", "y": "b"
+    }],
+    [
+      "(?<x>[^/]*)/b/(?<y>[^/]*)", {
+      "x": "a", "y": "c"
     }],
     [
       "(?<x>[^/]*)/(?<y>[^/]*)$", {
