@@ -26,6 +26,13 @@ describe(instance, () => {
     {"x": "a", "y": "b"},
     {"x": "", "y": "c"}
   ]))
+  describe('tag as backreference', () => {
+    it('true', () => expect(regStr('<(?<tag>[a-z]+)>[^<]+</\\k<tag>>', "<title>abc</title>")).toStrictEqual({
+      "tag": "title"
+    }))
+    it('false', () => expect(regStr('<(?<tag>[a-z]+)>[^<]+</\\k<tag>>', "<title>abc</titl>")).toBe(null))
+
+  })
 })
 
 function strReg(str: string, schema: string|RegExp) {
