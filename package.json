@@ -2,6 +2,7 @@
   "name": "patterning",
   "version": "0.0.1",
   "description": "",
+  "main": "index.ts",
   "scripts": {
     "postinstall": "git config include.path ../.gitconfig; git-hooks-wrapper init; exit 0",
     "test": "jest"
