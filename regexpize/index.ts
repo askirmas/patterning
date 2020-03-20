@@ -7,9 +7,16 @@ export {
 }
 
 function regexpize(regexp: string|RegExp, flags?: string|RegExpFlags) {
-  return regexp instanceof RegExp
+  const flagsStr = flagsToString(flags)
+  return (
+    regexp instanceof RegExp
+    && (
+      flags === undefined
+      || regexp.flags === flagsStr
+    )
+  )
   ? regexp
-  : new RegExp(regexp, flagsToString(flags))
+  : new RegExp(regexp, flagsStr)
 }
 
 function flagsToString(flags?: string|RegExpFlags) {
@@ -19,8 +26,8 @@ function flagsToString(flags?: string|RegExpFlags) {
     return undefined
   let $return = ''
   , key: keyof typeof flags
-  for (key in flags)
-    if (key in regExpFlaging && flags[key])
+  for (key in regExpFlaging)
+    if (flags[key])
       $return += regExpFlaging[key]
   return $return
 }

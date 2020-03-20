@@ -8,13 +8,14 @@ const str = 'asd';
 ].forEach(flag => myIt(flag))
 
 function myIt(flags: Parameters<typeof regexpize>[1]) {
-  return it(
+  return describe(
     flags === undefined
     ? 'undefined'
     : JSON.stringify(flags), () => {
       const result = regexpize(str, flags)
-      expect(regexpize(str, flags)).toStrictEqual(result) 
-      expect(regexpize(result)).toStrictEqual(result)     
+      it("assignment", () => expect(regexpize(str, flags)).toStrictEqual(result))
+      it('undefined flags', () => expect(regexpize(result)).toBe(result))
+      it('same flags', () => expect(regexpize(result, flags)).toBe(result))
   })
 
 }
