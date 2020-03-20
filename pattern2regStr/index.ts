@@ -10,28 +10,28 @@ export type RegStrParams = Partial<{
   /** @default ".*" */
   value: string
   /** @default false */
-  start: boolean
+  freeStart: boolean
   /** @default false */
-  end: boolean
+  freeEnd: boolean
 }> & (
   {keyReg: RegExp}
   | KeyParameters
 )
 
-function pattern2regStr(pattern: string, {value = $default.value, start, end, ...keyParams}: RegStrParams) {
+function pattern2regStr(pattern: string, {value = $default.value, freeStart, freeEnd, ...keyParams}: RegStrParams) {
   const keyReg = 'keyReg' in keyParams
   ? keyParams.keyReg
   : keyReger(keyParams)
 
   return `${
-    start ? '^' : ''
+    freeStart ? '' : '^'
   }${
     pattern.replace(
       keyReg,
       `(?<$1>${value})`
     )
   }${
-    end ? '$' :''
+    freeEnd ? '' :'$'
   }`
 }
 

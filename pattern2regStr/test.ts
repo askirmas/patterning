@@ -4,7 +4,8 @@ import $default from './default.json'
 const params = {prefix: "${", postfix: "}"}
 , keyReg = keyReger(params)
 , pattern = '${x}/b/${y}'
-, regString = '(?<x>.*)/b/(?<y>.*)'
+, freeRegString = '(?<x>.*)/b/(?<y>.*)'
+, regString = `^${freeRegString}$`
 it('pre and post', () => expect(pattern2regStr(
   pattern,
   params
@@ -15,6 +16,6 @@ it('keyReg', () => expect(pattern2regStr(
 )).toBe(regString))
 it('full', () => expect(pattern2regStr(
   pattern,
-  {...$default, ...params, start: true, end: true}
-)).toBe(`^${regString}$`))
+  {...$default, ...params, freeStart: true, freeEnd: true}
+)).toBe(freeRegString))
 
