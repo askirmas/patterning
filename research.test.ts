@@ -1,3 +1,5 @@
+import { exec, matchAll, match } from "./runner"
+
 const instance = "a/b/c"
 describe(instance, () => {
   const cases: [string, object][] = [
@@ -19,44 +21,22 @@ describe(instance, () => {
     }]
   ]
   for (const [reg, obj] of cases) {
-    it(reg, () => expect(strReg(instance, reg)).toStrictEqual(obj))
+    it(reg, () => expect(match(instance, reg)).toStrictEqual(obj))
   }
 
-  it('matchAll', () => expect(strRegAll(instance, "(?<x>[^/]*)/(?<y>[^/]*)")).toStrictEqual([
+  it('matchAll', () => expect(matchAll(instance, "(?<x>[^/]*)/(?<y>[^/]*)")).toStrictEqual([
     {"x": "a", "y": "b"},
     {"x": "", "y": "c"}
   ]))
+  it('matchAll without /g', () => expect(matchAll(instance, "(?<x>[^/]*)/(?<y>[^/]*)", '')).toStrictEqual([
+    {"x": "a", "y": "b"}
+  ]))
+
   describe('tag as backreference', () => {
-    it('true', () => expect(regStr('<(?<tag>[a-z]+)>[^<]+</\\k<tag>>', "<title>abc</title>")).toStrictEqual({
+    it('true', () => expect(exec("<title>abc</title>", '<(?<tag>[a-z]+)>[^<]+</\\k<tag>>')).toStrictEqual({
       "tag": "title"
     }))
-    it('false', () => expect(regStr('<(?<tag>[a-z]+)>[^<]+</\\k<tag>>', "<title>abc</titl>")).toBe(null))
+    it('false', () => expect(exec("<title>abc</titl>", '<(?<tag>[a-z]+)>[^<]+</\\k<tag>>')).toBe(null))
 
   })
 })
-
-function strReg(str: string, schema: string|RegExp) {
-  const $return = str.match(
-    regexpize(schema)
-  )
-  return $return && {...$return.groups}
-}
-
-function strRegAll(str: string, schema: string|RegExp) {
-  const $return = str.matchAll(
-    regexpize(schema, 'g')
-  )
-  return $return && [...$return].map(({groups}) => ({...groups}))
-}
-
-function regStr(schema: string|RegExp, str: string) {
-  const  $return = regexpize(schema)
-  .exec(str)
-  return $return && {...$return.groups}
-}
-
-function regexpize(regexp: string|RegExp, flags?: string) {
-  return regexp instanceof RegExp
-  ? regexp
-  : new RegExp(regexp, flags)
-}
