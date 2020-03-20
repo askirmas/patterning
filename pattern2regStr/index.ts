@@ -1,22 +1,11 @@
 import $default from './default.json'
+import {RegStrParams, KeyParameters} from "./definitions"
 
 export {
   pattern2regStr,
-  keyReger
+  keyReger,
+  RegStrParams
 }
-
-
-export type RegStrParams = Partial<{
-  /** @default ".*" */
-  value: string
-  /** @default false */
-  freeStart: boolean
-  /** @default false */
-  freeEnd: boolean
-}> & (
-  {keyReg: RegExp}
-  | KeyParameters
-)
 
 function pattern2regStr(pattern: string, {value = $default.value, freeStart, freeEnd, ...keyParams}: RegStrParams) {
   const keyReg = 'keyReg' in keyParams
@@ -33,13 +22,6 @@ function pattern2regStr(pattern: string, {value = $default.value, freeStart, fre
   }${
     freeEnd ? '' :'$'
   }`
-}
-
-type KeyParameters = {
-  prefix: string
-  postfix: string
-  /** @default "[a-zA-Z_][a-zA-Z0-9_]*" */
-  key?: string
 }
 
 function keyReger({prefix, postfix, key = $default.key}: KeyParameters) {
