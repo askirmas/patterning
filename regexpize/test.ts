@@ -4,6 +4,7 @@ const str = 'asd';
   undefined,
   '',
   {global: true},
+  {ignoreCase: true, unicode: false, global: true},
   {g: true}
 ].forEach(flag => myIt(flag))
 
@@ -17,5 +18,4 @@ function myIt(flags: Parameters<typeof regexpize>[1]) {
       it('undefined flags', () => expect(regexpize(result)).toBe(result))
       it('same flags', () => expect(regexpize(result, flags)).toBe(result))
   })
-
 }
