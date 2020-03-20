@@ -1,0 +1,26 @@
+{
+  "name": "patterning",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "postinstall": "git config include.path ../.gitconfig; git-hooks-wrapper init; exit 0",
+    "test": "jest --coverage --passWithNoTests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/askirmas/patterning.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/askirmas/patterning/issues"
+  },
+  "homepage": "https://github.com/askirmas/patterning#readme",
+  "dependencies": {
+    "git-hooks-wrapper": "^0.4.6",
+    "jest": "^25.1.0",
+    "np": "^6.2.0",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  }
+}
