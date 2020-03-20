@@ -5,7 +5,7 @@ describe(instance, () => {
   const cases: [string, object][] = [
     [
       "(?<x>.*)/(?<y>.*)", {
-      "x": "a/b", "y": "c"
+      "x": "a/b", "y": "c"  
     }],
     [
       "(?<x>[^/]*)/(?<y>[^/]*)", {
@@ -33,10 +33,24 @@ describe(instance, () => {
   ]))
 
   describe('tag as backreference', () => {
-    it('true', () => expect(exec("<title>abc</title>", '<(?<tag>[a-z]+)>[^<]+</\\k<tag>>')).toStrictEqual({
+    const key = "tag"
+    , keyPattern = '[a-z]+'
+    , valuePattern = "[^<]+"
+    , openPrefix = "<"
+    , openPostfix = ">"
+    , closePrefix = "</"
+    , closePostfix = ">"
+    , catcher = `${
+      openPrefix}(?<${key}>${keyPattern})${openPostfix
+    }${
+      valuePattern
+    }${
+      closePrefix}\\k<${key}>${closePostfix
+    }`
+    it('true', () => expect(exec("<title>abc</title>", catcher)).toStrictEqual({
       "tag": "title"
     }))
-    it('false', () => expect(exec("<title>abc</titl>", '<(?<tag>[a-z]+)>[^<]+</\\k<tag>>')).toBe(null))
+    it('false', () => expect(exec("<title>abc</titl>", catcher)).toBe(null))
 
   })
 })
