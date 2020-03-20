@@ -1,0 +1,8 @@
+{
+  "global": "g",
+  "ignoreCase": "i",
+  "multiline": "m",
+  "dotAll": "s",
+  "unicode": "u",
+  "sticky": "y"
+}

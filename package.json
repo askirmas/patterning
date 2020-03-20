@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "postinstall": "git config include.path ../.gitconfig; git-hooks-wrapper init; exit 0",
-    "test": "jest --coverage"
+    "test": "jest"
   },
   "repository": {
     "type": "git",

@@ -1,16 +1,9 @@
+import regExpFlaging from './flags.json'
+
 export {
   regexpize
 }
-
-const regExpFlaging = {
-  "global": "g",
-  "ignoreCase": "i",
-  "multiline": "m",
-  "dotAll": "s",
-  "unicode": "u",
-  "sticky": "y"
-} 
-
+  
 /** https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions */
 export type RegExpFlags = Partial<{
   /** Global search */

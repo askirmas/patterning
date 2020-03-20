@@ -1,4 +1,4 @@
-import {regexpize} from './regexpize'
+import {regexpize} from '.'
 const str = 'asd';
 [
   undefined,

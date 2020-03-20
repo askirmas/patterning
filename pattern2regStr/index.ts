@@ -1,12 +1,8 @@
-const $default = {
-  value: ".*",
-  key: "[a-zA-Z_][a-zA-Z0-9_]*"
-}
+import $default from './default.json'
 
 export {
   pattern2regStr,
-  keyReger,
-  getDefault
+  keyReger
 }
 
 
@@ -52,8 +48,4 @@ function keyReger({prefix, postfix, key = $default.key}: KeyParameters) {
 
 function escape(str: string) {
   return str.replace(/[\\{}$[\]()?+*|\.\-\^]/g, "\\$&")
-}
-
-function getDefault() {
-  return {...$default}
 }
