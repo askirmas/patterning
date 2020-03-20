@@ -1,22 +1,33 @@
 import $default from './default.json'
 import {RegStrParams, KeyParameters} from "./definitions"
 
+const escapePattern = /[\\{}$[\]()?+*|\.\-\^]/g
+
+export default pattern2regStr
 export {
-  pattern2regStr,
-  keyReger,
+  pattern2regStr, keyReger,
   RegStrParams
 }
 
-function pattern2regStr(pattern: string, {value = $default.value, freeStart, freeEnd, ...keyParams}: RegStrParams) {
-  const keyReg = 'keyReg' in keyParams
-  ? keyParams.keyReg
-  : keyReger(keyParams)
+/** `keyReg: RegExp` will be injected in @param `params` */
+function pattern2regStr(pattern: string, params: RegStrParams) {
+  const {
+    value = $default.value,
+    freeStart, freeEnd,
+    ...keyParams
+  } = params
+
+  if (!('keyReg' in keyParams))
+    //@ts-ignore
+    params['keyReg']
+    = keyReger(keyParams)
 
   return `${
     freeStart ? '' : '^'
   }${
     pattern.replace(
-      keyReg,
+      //@ts-ignore
+      params.keyReg,
       `(?<$1>${value})`
     )
   }${
@@ -25,9 +36,11 @@ function pattern2regStr(pattern: string, {value = $default.value, freeStart, fre
 }
 
 function keyReger({prefix, postfix, key = $default.key}: KeyParameters) {
-  return new RegExp(`${escape(prefix)}(${key})${escape(postfix)}`, 'g')
-}
-
-function escape(str: string) {
-  return str.replace(/[\\{}$[\]()?+*|\.\-\^]/g, "\\$&")
+  return new RegExp(`${
+    prefix.replace(escapePattern, "\\$&")
+  }(${
+    key
+  })${
+    postfix.replace(escapePattern, "\\$&")
+  }`, 'g')
 }

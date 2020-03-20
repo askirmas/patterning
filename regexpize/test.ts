@@ -1,6 +1,7 @@
 import {regexpize} from '.'
 const str = 'asd';
 [
+  null as unknown as undefined,
   undefined,
   '',
   {global: true},

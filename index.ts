@@ -1,53 +1,48 @@
-import * as runner from "./runner"
-import { pattern2regStr } from "./pattern2regStr"
+import { pattern2regStr, RegStrParams as KeyParameters} from "./pattern2regStr"
+import { regexpize, RegExpFlags } from "./regexpize"
 
-type Methods = keyof typeof runner
-//const methods = Object.freeze(Object.keys(runner) as Methods[])
-const methods = Object.freeze(["match", "exec", "matchAll"] as const)
-
-type PatternParameters = Parameters<typeof pattern2regStr>[1]
-type Flags = Parameters<typeof runner[Methods]>[2]
-
-export default launcher
+export default match
 export {
   match, exec, matchAll,
-  methods,
-  PatternParameters, Flags, Methods
-}
-
-function launcher(
-  method: keyof typeof runner,
-  instance: string,
-  schema: string,
-  params: PatternParameters,
-  flags?: Flags
-) {
-  return runner[method](instance, pattern2regStr(schema, params), flags)
+  KeyParameters, RegExpFlags
 }
 
 function match(
   instance: string,
-  schema: string,
-  params: PatternParameters,
-  flags?: Flags
+  strSchema: string,
+  params: KeyParameters,
+  flags?: RegExpFlags
 ) {
-  return runner.match(instance, pattern2regStr(schema, params), flags)
+  const schema = pattern2regStr(strSchema, params)
+  , $return = instance.match(
+    regexpize(schema, flags)
+  )
+  return $return && {...$return.groups}
 }
 
 function exec(
   instance: string,
-  schema: string,
-  params: PatternParameters,
-  flags?: Flags
+  strSchema: string,
+  params: KeyParameters,
+  flags?: RegExpFlags
 ) {
-  return runner.exec(instance, pattern2regStr(schema, params), flags)
+  const schema = pattern2regStr(strSchema, params)
+  , $return = regexpize(schema, flags)
+  .exec(instance)
+
+  return $return && {...$return.groups}  
 }
 
 function matchAll(
   instance: string,
-  schema: string,
-  params: PatternParameters,
-  flags?: Flags
+  strSchema: string,
+  params: KeyParameters,
+  flags: RegExpFlags = 'g'
 ) {
-  return runner.matchAll(instance, pattern2regStr(schema, params), flags)
+  const schema = pattern2regStr(strSchema, params)
+  , $return = instance.matchAll(
+    regexpize(schema, flags)
+  )
+  return $return && [...$return]
+  .map(({groups}) => groups && {...groups})
 }

@@ -1,33 +1,39 @@
 import regExpFlaging from './flags.json'
-import {RegExpFlags} from "./definitions"
+import {RegExpFlagsObject} from "./definitions"
 
+type RegExpFlags = string|RegExpFlagsObject
+
+export default regexpize
 export {
   regexpize,
   RegExpFlags
 }
 
-function regexpize(regexp: string|RegExp, flags?: string|RegExpFlags) {
-  const flagsStr = flagsToString(flags)
+function regexpize(regexp: string|RegExp, flags?: RegExpFlags) {
+  let flagsStr: string|undefined = undefined
+
+  switch(typeof flags) {
+    case 'string':
+      flagsStr = flags
+      break
+    case 'object':
+      if (!flags)
+        break
+      flagsStr = ''
+      let key: keyof typeof flags
+      for (key in regExpFlaging)
+        if (flags[key])
+          flagsStr += regExpFlaging[key]
+      break          
+  }
+
   return (
     regexp instanceof RegExp
     && (
-      flags === undefined
+      flagsStr === undefined
       || regexp.flags === flagsStr
     )
   )
   ? regexp
   : new RegExp(regexp, flagsStr)
-}
-
-function flagsToString(flags?: string|RegExpFlags) {
-  if (typeof flags === 'string')
-    return flags
-  if (!flags || typeof flags !== 'object')
-    return undefined
-  let $return = ''
-  , key: keyof typeof flags
-  for (key in regExpFlaging)
-    if (flags[key])
-      $return += regExpFlaging[key]
-  return $return
 }
