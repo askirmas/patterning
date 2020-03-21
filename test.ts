@@ -1,6 +1,7 @@
 
 import {keyReger, schemaParser, parse, methods, SchemaParameters} from '.'
 import regexpize from './regexpize'
+import { schema2regStr } from './schemaReg'
 
 const instance = "a/b/c"
 , valuePattern = "[^/]*"
@@ -8,7 +9,8 @@ const instance = "a/b/c"
   prefix: ":",
   postfix: ""
 })
-, expressRouteSchema = ":x/:y"
+, expressRouteSchema_1 = ":x/:y"
+, expressRouteSchema_2 = ":x/b/:y"
 , withValue: Partial<SchemaParameters> = {valuePattern}
 , withValueFreeStart: Partial<SchemaParameters> = {...withValue, freeStart: true}
 , withValueFree: Partial<SchemaParameters> = {...withValueFreeStart, freeEnd: true}
@@ -41,7 +43,7 @@ describe(instance, () => {
       }
     ][] = [
       [
-        expressRouteSchema,
+        expressRouteSchema_1,
         undefined,
         {
           "$default": {"x": "a/b", "y": "c"},
@@ -49,7 +51,7 @@ describe(instance, () => {
         }
       ],
       [
-        expressRouteSchema,
+        expressRouteSchema_1,
         withValue,
         {
           "matchAll": [],
@@ -57,7 +59,7 @@ describe(instance, () => {
         }
       ],
       [
-        expressRouteSchema,
+        expressRouteSchema_1,
         withValueFree,
         {
           "matchAll": [{"x": "a", "y": "b"}, {"x": "", "y": "c"}],
@@ -65,21 +67,21 @@ describe(instance, () => {
         }
       ],
       [
-        ":x/b/:y",
+        expressRouteSchema_1,
+        withValueFreeStart,
+        {
+          "$default": {"x": "b", "y": "c"},
+          "matchAll": true
+        }
+      ],
+      [
+        expressRouteSchema_2,
         withValueFree,
         {
           "$default": {"x": "a", "y": "c"},
           "matchAll": true
         }
       ],
-      [
-        expressRouteSchema,
-        withValueFreeStart,
-        {
-          "$default": {"x": "b", "y": "c"},
-          "matchAll": true
-        }
-      ]
     ]
   
     for (const [schema, params, expectation] of cases)
@@ -109,7 +111,7 @@ describe(instance, () => {
       })
   })
   describe('matchAll', () => {
-    const parser = schemaParser(expressRouteCatcher, expressRouteSchema, withValueFree)
+    const parser = schemaParser(expressRouteCatcher, expressRouteSchema_1, withValueFree)
     it('matchAll', () => expect(
       parse(parser, instance, 'g', "matchAll")
     ).toStrictEqual([
@@ -133,6 +135,14 @@ it('bad method', () => expect(parse(
 
 
 describe('research', () => {
+
+  type rp = Parameters<typeof regexpize>
+  function exec(str: string, schema: rp[0], flags?: rp[1]) {
+    const  $return = regexpize(schema, flags)
+    .exec(str)
+    return $return && {...$return.groups}
+  }
+
   describe('tag as backreference', () => {
     // https://2ality.com/2017/05/regexp-named-capture-groups.html#backreferences
     const key = "tag"
@@ -182,13 +192,23 @@ describe('research', () => {
       [0].groups
     ).toStrictEqual({tag: "b"}))
   })
-
-
-
-  type rp = Parameters<typeof regexpize>
-  function exec(str: string, schema: rp[0], flags?: rp[1]) {
-    const  $return = regexpize(schema, flags)
-    .exec(str)
-    return $return && {...$return.groups}
-  }
+  describe('reshape', () => {
+  const parser = regexpize(schema2regStr(
+      expressRouteCatcher,
+      expressRouteSchema_2
+    ))
+    describe('not match', () => {
+      it('replace', () => expect(
+        instance.replace(parser,
+          '$<source>/b/$<id>'
+        )
+      ).toBe('/b/'))
+    })    
+    it('1', () => expect(
+      instance.replace(parser,
+        '/$<x>?id=$<y>'
+      )
+    )
+    .toBe('/a?id=c'))
+  })
 })
