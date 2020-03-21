@@ -38,7 +38,19 @@ class Parser {
         return schema.match(instance)
     return
   }
-  
+
+  replace(instance: string, parser: Parser) {
+    for (const schema of this._schemas.values())
+      if (schema.test(instance))
+        //TODO: Hide...
+        for (const recepient of parser._schemas.values()) {
+          const $result = schema.replace(instance, recepient)
+          if ($result)
+            return $result
+        }
+    return
+  }
+
   clear() {
     return this._schemas.clear()
   }
@@ -84,10 +96,14 @@ class Schema {
     return this._parser.test(instance)
   }
   replace(instance: string, schema: Schema) {
-    return this._parser.test(instance)
+    const $return = this._parser.test(instance)
     && instance.replace(this._parser, schema.replacer)
     //TODO: order escaping/unescaping
     .replace('\\', '')
+
+    return $return && schema.test($return)
+    ? $return
+    : undefined
   }
   /*place(schema: Schema, instance: string) {
     return this.test(instance) && instance.replace(schema._parser, this._replacer)
