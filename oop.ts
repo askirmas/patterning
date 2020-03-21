@@ -22,7 +22,7 @@ class Parser {
     this._params = params
   }
   
-  schema(schema: string, params?: SchemaParams) {
+  schema(schema: string/*TODO: |RegExp|Schema*/, params?: SchemaParams) {
     const schemas = this._schemas
     /*, {valuePattern} = params
     , opts = {valuePattern, ...free}*/
@@ -30,6 +30,17 @@ class Parser {
     if (params || !schemas.has(schema))
       schemas.set(schema, new Schema(this._keyReg, schema, params || this._params)) 
     return this._schemas.get(schema)!
+  }
+
+  match(instance: string) {
+    for(const schema of this._schemas.values())
+      if (schema.test(instance))
+        return schema.match(instance)
+    return
+  }
+  
+  clear() {
+    return this._schemas.clear()
   }
 }
 

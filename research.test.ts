@@ -169,7 +169,7 @@ describe("super position", () => {
     }`, 'g')
   }
 
-  describe("switch", () => {
+  describe("merge reg-exps", () => {
     describe("little demo", () => {
       const routes = switchRegExps([
         /(?<command>\w+)\/(?<id>\w+)/,
@@ -258,43 +258,5 @@ describe("super position", () => {
         ] as const)      
       })
     })
-  })
-
-  function chainRegExps(regs: RegExp[], instance: string) {  
-    const $result = regs.find(reg => reg.test(instance))?.exec(instance)?.groups
-    return $result && {...$result}
-  }
-
-  describe('chain', () => {
-    const routes = [
-      /^api\/(?<script>\w+)$/,
-      /^api\/(?<script>\w+)\/(?<id>\d+)$/,
-      /^(?<page>\w+)$/,
-      /^(?<page>\w+)\/(?<item>\w+)$/
-    ]
-    , cases = [
-      [""],
-      ["api", {
-        "page": "api"
-      }],
-      ["api/user", {
-        "script": "user",
-      }],
-      ["api/user/10", {
-        "script": "user",
-        "id": "10"
-      }],
-      ["api/user/bibi"],
-      ["user", {
-        "page": "user"
-      }],
-      ["user/bibi", {
-        "page": "user",
-        "item": "bibi"
-      }],
-      ["user/bibi/junior"],
-    ] as const
-    for (const [url, expectation] of cases)
-     it(url, () => expect(chainRegExps(routes, url)).toStrictEqual(expectation))
   })
 })

@@ -90,3 +90,55 @@ describe('reshape', () => {
       })
     }
 })
+
+describe('.match', () => {
+  const parser = new Parser({
+    "prefix": ":",
+    "postfix": "",
+    "valuePattern": "\\w+"
+  }) 
+  , routes = [
+    "api/:script",
+    "api/:script/:id",
+    ":page",
+    ":page/:item"
+  ]
+  , cases = [
+    [""],
+    ["api", {
+      "page": "api"
+    }],
+    ["api/user", {
+      "script": "user",
+    }],
+    ["api/user/10", {
+      "script": "user",
+      "id": "10"
+    }],
+    ["user", {
+      "page": "user",
+    }],
+    ["user/bibi", {
+      "page": "user",
+      "item": "bibi"
+    }],
+    ["user/bibi/junior"],
+  ] as const
+
+  beforeAll(done => {
+    parser.clear()
+    routes.forEach(route => parser.schema(route))
+    done()
+  })
+  for (const [url, expectation] of cases)
+    it(url, () => expect(parser.match(url)).toStrictEqual(expectation))
+ 
+  describe("//TODO: Key-specific pattern", () => {
+    const url = "api/user/bibi"
+    it.skip(":id will be \\d+", () => expect(parser.match(url)).toBe(undefined))
+    it(url, () => expect(parser.match(url)).toStrictEqual({
+      "script": "user",
+      "id": "bibi"
+    }))
+  })
+})
