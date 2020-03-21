@@ -25,6 +25,7 @@ function schema2regStr(
   }${
     schema.replace(
       keyReg,
+      //TODO: Object/Function with valuePattern per key
       `(?<$1>${valuePattern})`
     )
   }${

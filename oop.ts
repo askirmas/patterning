@@ -11,6 +11,7 @@ type Params = Parameters<typeof keyReger>[0] & SchemaParams
   freeEnd: true
 }*/
 //TODO: Callable class https://hackernoon.com/creating-callable-objects-in-javascript-d21l3te1 https://stackoverflow.com/questions/12769636/how-to-make-a-class-implement-a-call-signature-in-typescript
+//TODO: Extends Schema means joins all schemas
 class Parser {
   _keyReg: RegExp
   _params: Params
