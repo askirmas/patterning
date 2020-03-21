@@ -24,15 +24,7 @@ describe(schema2regStr.name, () => {
   )).toBe(freeDigits))
 })
 
-describe(schema2replace.name, () => {
-  it('default === strict', () => expect(schema2replace(
-    keyReg,
-    pattern
-  )).toBe("^$<x>/b/$<y>$"))
-  it('free', () => expect(schema2replace(
-    keyReg,
-    pattern,
-    freeOpts
-  )).toBe("$<x>/b/$<y>"))
-
-})
+it(schema2replace.name, () => expect(schema2replace(
+  keyReg,
+  pattern
+)).toBe("$<x>/b/$<y>"))

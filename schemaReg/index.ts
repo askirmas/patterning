@@ -1,7 +1,8 @@
-import {valuePattern as defaultValuePattern, keyPattern as defaultKeyPattern} from './default.json'
+import $default from './default.json'
 import {SchemaParameters, KeyParameters} from "./definitions"
 
 const escapePattern = /[\\{}$[\]()?+*|\.\-\^]/g
+, {valuePattern: defaultValuePattern, keyPattern: defaultKeyPattern} = $default
 
 export {
   schema2regStr, schema2replace, 
@@ -29,22 +30,11 @@ function schema2regStr(
   }`
 }
 
-function schema2replace(keyReg: RegExp,
-  schema: string,
-  {
-    freeStart, freeEnd,
-  }: Exclude<SchemaParameters, 'valuePattern'> = {}
-) {
-  return `${
-    freeStart ? '' : '^'
-  }${
-    schema.replace(
-      keyReg,
-      `$<$1>`
-    )
-  }${
-    freeEnd ? '' :'$'
-  }`
+function schema2replace(keyReg: RegExp, schema: string) {
+  return schema.replace(
+    keyReg,
+    `$<$1>`
+  )
 }
 
 function keyReger({prefix, postfix, keyPattern = defaultKeyPattern}: KeyParameters) {
