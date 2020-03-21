@@ -1,7 +1,7 @@
 import regExpFlaging from './flags.json'
 import {RegExpFlagsObject} from "./definitions"
 
-type RegExpFlags = string|RegExpFlagsObject
+type RegExpFlags = RegExpFlagsObject|string|null|undefined|false
 
 export default regexpize
 export {
@@ -9,9 +9,14 @@ export {
   RegExpFlags
 }
 
-function regexpize(regexp: string|RegExp, flags?: RegExpFlags) {
+/** @returns `source` on strict `flags` equilty */
+function regexpize(
+  source: string|RegExp,
+  flags?: RegExpFlags
+) {
   let flagsStr: string|undefined = undefined
 
+  // flagObject to flagString 
   switch(typeof flags) {
     case 'string':
       flagsStr = flags
@@ -28,12 +33,12 @@ function regexpize(regexp: string|RegExp, flags?: RegExpFlags) {
   }
 
   return (
-    regexp instanceof RegExp
+    source instanceof RegExp
     && (
       flagsStr === undefined
-      || regexp.flags === flagsStr
+      || source.flags === flagsStr
     )
   )
-  ? regexp
-  : new RegExp(regexp, flagsStr)
+  ? source
+  : new RegExp(source, flagsStr)
 }

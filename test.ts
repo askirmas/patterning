@@ -1,45 +1,46 @@
 
-import {match, exec, matchAll} from '.'
-import {KeyParameters} from '.'
+import {keyReger, schemaParser, parse, methods, SchemaParameters} from '.'
 
-const methods = {match, exec, matchAll}
-, instance = "a/b/c"
+const instance = "a/b/c"
 , valuePattern = "[^/]*"
-, expressRoute: KeyParameters = {
+, expressRouteCatcher = keyReger({
   prefix: ":",
   postfix: ""
-}
-, templateLiteral: KeyParameters = {
-  prefix: "${",
-  postfix: "}"
-}
-, withValue: Partial<KeyParameters> = {value: valuePattern}
-, withValueFreeStart: Partial<KeyParameters> = {...withValue, freeStart: true}
-, withValueFree: Partial<KeyParameters> = {...withValueFreeStart, freeEnd: true}
+})
+, expressRouteSchema = ":x/:y"
+, withValue: Partial<SchemaParameters> = {valuePattern}
+, withValueFreeStart: Partial<SchemaParameters> = {...withValue, freeStart: true}
+, withValueFree: Partial<SchemaParameters> = {...withValueFreeStart, freeEnd: true}
 
 describe(instance, () => {
-  describe('templateLiteral', () => {
+  describe('template literal', () => {
     const schema = "${$x}/${y}"
+    , parser = schemaParser(
+      {
+        prefix: "${",
+        postfix: "}"
+      },
+      schema
+    )
+    , expectation = {"$x": "a/b", "y": "c"}
+        
     it(schema, () => expect(
-      match(instance, schema, templateLiteral)
-    ).toStrictEqual(
-      {"$x": "a/b", "y": "c"}
-    ))
+      parse(parser, instance)
+    ).toStrictEqual(expectation))
   })
 
   describe('expressRoute', () => {
     const cases: [
       string,
-      Partial<KeyParameters>|undefined,
+      Partial<SchemaParameters>|undefined,
       {
-        /** `match` and `exec` produce the same. `Exec` have side effect and maybe slightly faster https://www.measurethat.net/Benchmarks/Show/3168/0/match-vs-exec  */
         $default: Record<string,string>|null
-        /** `true` means `[$default]` to easier see where's the difference */ 
+        /** `true` means `[$default]` to easier see where's the difference */
         matchAll: any[]|true
       }
     ][] = [
       [
-        ":x/:y",
+        expressRouteSchema,
         undefined,
         {
           "$default": {"x": "a/b", "y": "c"},
@@ -47,7 +48,7 @@ describe(instance, () => {
         }
       ],
       [
-        ":x/:y",
+        expressRouteSchema,
         withValue,
         {
           "matchAll": [],
@@ -55,7 +56,7 @@ describe(instance, () => {
         }
       ],
       [
-        ":x/:y",
+        expressRouteSchema,
         withValueFree,
         {
           "matchAll": [{"x": "a", "y": "b"}, {"x": "", "y": "c"}],
@@ -71,7 +72,7 @@ describe(instance, () => {
         }
       ],
       [
-        ":x/:y",
+        expressRouteSchema,
         withValueFreeStart,
         {
           "$default": {"x": "b", "y": "c"},
@@ -82,7 +83,7 @@ describe(instance, () => {
   
     for (const [schema, params, expectation] of cases)
       describe(`${schema} @ ${JSON.stringify(params)}`, () => {
-        for (const method in methods) { 
+        for (const method of methods) { 
           const expected = method === "matchAll" && method in expectation
           ? (
             expectation[method] === true
@@ -93,10 +94,11 @@ describe(instance, () => {
 
           it(method, () => {
             expect(
-              methods[method as keyof typeof methods](
+              parse(
+                schemaParser(expressRouteCatcher, schema, params),
                 instance,
-                schema,
-                {...expressRoute, ...params}
+                method === "matchAll" && 'g',
+                method
               )
             ).toStrictEqual(
               expected
@@ -105,17 +107,25 @@ describe(instance, () => {
         }
       })
   })
-
-  it('matchAll', () => expect(
-    matchAll(instance, ":x/:y", {...withValueFree, ...expressRoute})
-  ).toStrictEqual([
-    {"x": "a", "y": "b"},
-    {"x": "", "y": "c"}
-  ]))
-  it('matchAll without /g', () => expect(
-    matchAll(instance, ":x/:y", {...withValueFree, ...expressRoute}, '')
-  ).toStrictEqual([
-    {"x": "a", "y": "b"}
-  ]))
-
+  describe('matchAll', () => {
+    const parser = schemaParser(expressRouteCatcher, expressRouteSchema, withValueFree)
+    it('matchAll', () => expect(
+      parse(parser, instance, 'g', "matchAll")
+    ).toStrictEqual([
+      {"x": "a", "y": "b"},
+      {"x": "", "y": "c"}
+    ]))
+    it('matchAll without /g', () => expect(
+      parse(parser, instance, undefined, "matchAll")
+    ).toStrictEqual([
+      {"x": "a", "y": "b"}
+    ]))
+  })
 })
+it('bad method', () => expect(parse(
+  /a/, instance, '',
+  //@ts-ignore
+  'asd'
+)).toBe(
+  undefined
+))
