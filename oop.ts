@@ -51,9 +51,9 @@ class Schema {
     )
   }
 
-  /*get replacer() {
+  get replacer() {
     return this._replacer
-  }*/
+  }
 
   match(instance: string) {
     const matchReturn = instance.match(this._parser)
@@ -68,13 +68,16 @@ class Schema {
     const execReturn = this._parser.exec(instance)
     return execReturn && {...execReturn.groups}  
   }
-  /*test(instance: string) {
+  test(instance: string) {
     return this._parser.test(instance)
   }
   replace(instance: string, schema: Schema) {
-    return schema.test(instance) && instance.replace(this._parser, schema.replacer)
+    return this._parser.test(instance)
+    && instance.replace(this._parser, schema.replacer)
+    //TODO: order escaping/unescaping
+    .replace('\\', '')
   }
-  place(schema: Schema, instance: string) {
+  /*place(schema: Schema, instance: string) {
     return this.test(instance) && instance.replace(schema._parser, this._replacer)
     //return schema.replace(instance, this)
   }*/

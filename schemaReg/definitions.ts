@@ -1,17 +1,16 @@
 export type SchemaParameters = Partial<{
-  /** //TODO: Consider .+
-   * @default ".*"
-   * */
-  valuePattern: string
+  /** @default ".*" */ //TODO: 1) Consider
+  valuePattern: string //TODO: |RegExp
   /** @default false */
-  freeStart: boolean
+  freeStart: boolean //TODO: |RegExp
   /** @default false */
-  freeEnd: boolean
+  freeEnd: boolean //TODO: |RegExp
 }>
 
+//TODO: Pattern for specific key
 export type KeyParameters = {
-  prefix: string
-  postfix: string
+  prefix: string //TODO: |RegExp
+  postfix: string //TODO: |RegExp
   /** @default "[a-zA-Z_$][a-zA-Z0-9_$]*" */
-  keyPattern?: string
+  keyPattern?: string //TODO: |RegExp
 }
