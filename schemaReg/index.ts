@@ -4,7 +4,8 @@ import {SchemaParameters, KeyParameters} from "./definitions"
 const escapePattern = /[\\{}$[\]()?+*|\.\-\^]/g
 
 export {
-  schema2regStr, keyReger,
+  schema2regStr, schema2replace, 
+  keyReger,
   SchemaParameters, KeyParameters
 }
 
@@ -22,6 +23,24 @@ function schema2regStr(
     schema.replace(
       keyReg,
       `(?<$1>${valuePattern})`
+    )
+  }${
+    freeEnd ? '' :'$'
+  }`
+}
+
+function schema2replace(keyReg: RegExp,
+  schema: string,
+  {
+    freeStart, freeEnd,
+  }: Exclude<SchemaParameters, 'valuePattern'> = {}
+) {
+  return `${
+    freeStart ? '' : '^'
+  }${
+    schema.replace(
+      keyReg,
+      `$<$1>`
     )
   }${
     freeEnd ? '' :'$'

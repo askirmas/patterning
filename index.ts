@@ -1,6 +1,7 @@
 import { keyReger, schema2regStr, KeyParameters, SchemaParameters } from "./schemaReg"
 import regexpize from "./regexpize"
 
+//TODO: add .text/.search/... 
 const methods = ["exec", "match", "matchAll"] as const
 
 export {

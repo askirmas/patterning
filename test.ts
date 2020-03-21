@@ -1,7 +1,7 @@
 
 import {keyReger, schemaParser, parse, methods, SchemaParameters} from '.'
 import regexpize from './regexpize'
-import { schema2regStr } from './schemaReg'
+import { schema2regStr, schema2replace } from './schemaReg'
 
 const instance = "a/b/c"
 , valuePattern = "[^/]*"
@@ -193,7 +193,7 @@ describe('research', () => {
     ).toStrictEqual({tag: "b"}))
   })
   describe('reshape', () => {
-  const parser = regexpize(schema2regStr(
+    const parser = regexpize(schema2regStr(
       expressRouteCatcher,
       expressRouteSchema_2
     ))
@@ -204,6 +204,11 @@ describe('research', () => {
         )
       ).toBe('/b/'))
     })    
+    it('idfn', () => expect(
+      instance.replace(parser,
+        schema2replace(expressRouteCatcher, expressRouteSchema_2, withValueFree)
+      )
+    ).toBe(instance))
     it('1', () => expect(
       instance.replace(parser,
         '/$<x>?id=$<y>'
