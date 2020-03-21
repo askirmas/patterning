@@ -15,5 +15,11 @@
       "^.+\\.[tj]sx?$": "ts-jest"
   },
   "bail": 1,
-  "verbose": true
+  "verbose": true,
+  "preset": "ts-jest",
+  "globals": {
+      "ts-jest": {
+          "tsConfig": "tsconfig.json"
+      }
+  }
 }

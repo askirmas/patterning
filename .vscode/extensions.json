@@ -3,6 +3,7 @@
     "streetsidesoftware.code-spell-checker",
     "gruntfuggly.todo-tree",
     "orta.vscode-jest",
+    "ryanluker.vscode-coverage-gutters",
     "eg2.vscode-npm-script",
     "dbaeumer.vscode-eslint",
     "waderyan.gitblame",
