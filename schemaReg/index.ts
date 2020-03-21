@@ -13,11 +13,13 @@ export {
 function schema2regStr(
   keyReg: RegExp,
   schema: string,
-  {
+  opts: SchemaParameters = {}
+) {
+  const {
     valuePattern = defaultValuePattern,
     freeStart, freeEnd,
-  }: SchemaParameters = {}
-) {
+  } = opts || {}
+  
   return `${
     freeStart ? '' : '^'
   }${

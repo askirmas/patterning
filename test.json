@@ -1,0 +1,66 @@
+{
+  "expressRoute": {
+    "keyParameters": {
+      "prefix": ":",
+      "postfix": ""
+    },
+    "schemas": [":x/:y",":x/b/:y"],
+    "suites": [
+      [
+        ":x/:y",
+        null,
+        {
+          "$default": {"x": "a/b", "y": "c"},
+          "matchAll": true
+        }
+      ],
+      [
+        ":x/:y",
+        {"valuePattern": "[^/]*"},
+        {
+          "matchAll": [],
+          "$default": null
+        }
+      ],
+      [
+        ":x/:y",
+        {"valuePattern": "[^/]*", "freeStart": true, "freeEnd": true},
+        {
+          "matchAll": [{"x": "a", "y": "b"}, {"x": "", "y": "c"}],
+          "$default": {"x": "a", "y": "b"}
+        }
+      ],
+      [
+        ":x/:y",
+        {"valuePattern": "[^/]*", "freeStart": true},
+        {
+          "$default": {"x": "b", "y": "c"},
+          "matchAll": true
+        }
+      ],
+      [
+        ":x/b/:y",
+        {"valuePattern": "[^/]*", "freeStart": true, "freeEnd": true},
+        {
+          "$default": {"x": "a", "y": "c"},
+          "matchAll": true
+        }
+      ]
+    ]
+  },
+  "templateLiteral": {
+    "keyParameters": {
+      "prefix": "${",
+      "postfix": "}"
+    },
+    "suite": {
+      "schema": "${$x}/${y}",
+      "expectation": {"$x": "a/b", "y": "c"}
+    }
+  },
+  "definitions": {
+    "withValue": {"valuePattern": "[^/]*"},
+    "withValueFreeStart": {"valuePattern": "[^/]*", "freeStart": true},
+    "withValueFree": {"valuePattern": "[^/]*", "freeStart": true, "freeEnd": true}
+  }
+}

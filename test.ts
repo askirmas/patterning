@@ -2,30 +2,22 @@
 import {keyReger, schemaParser, parse, methods, SchemaParameters} from '.'
 import regexpize from './regexpize'
 import { schema2regStr, schema2replace } from './schemaReg'
+import {expressRoute, templateLiteral, definitions} from "./test.json"
 
 const instance = "a/b/c"
-, valuePattern = "[^/]*"
-, expressRouteCatcher = keyReger({
-  prefix: ":",
-  postfix: ""
-})
-, expressRouteSchema_1 = ":x/:y"
-, expressRouteSchema_2 = ":x/b/:y"
-, withValue: Partial<SchemaParameters> = {valuePattern}
-, withValueFreeStart: Partial<SchemaParameters> = {...withValue, freeStart: true}
-, withValueFree: Partial<SchemaParameters> = {...withValueFreeStart, freeEnd: true}
+, expressRouteCatcher = keyReger(expressRoute.keyParameters)
+, {withValueFree} = definitions
 
 describe(instance, () => {
   describe('template literal', () => {
-    const schema = "${$x}/${y}"
-    , parser = schemaParser(
-      {
-        prefix: "${",
-        postfix: "}"
-      },
-      schema
-    )
-    , expectation = {"$x": "a/b", "y": "c"}
+    const {
+      keyParameters,
+      suite: {
+        schema,
+        expectation
+      }
+    } = templateLiteral
+    , parser = schemaParser(keyParameters, schema)
         
     it(schema, () => expect(
       parse(parser, instance)
@@ -33,7 +25,7 @@ describe(instance, () => {
   })
 
   describe('expressRoute', () => {
-    const cases: [
+    const cases = expressRoute.suites as [
       string,
       Partial<SchemaParameters>|undefined,
       {
@@ -41,48 +33,7 @@ describe(instance, () => {
         /** `true` means `[$default]` to easier see where's the difference */
         matchAll: any[]|true
       }
-    ][] = [
-      [
-        expressRouteSchema_1,
-        undefined,
-        {
-          "$default": {"x": "a/b", "y": "c"},
-          "matchAll": true,
-        }
-      ],
-      [
-        expressRouteSchema_1,
-        withValue,
-        {
-          "matchAll": [],
-          "$default": null
-        }
-      ],
-      [
-        expressRouteSchema_1,
-        withValueFree,
-        {
-          "matchAll": [{"x": "a", "y": "b"}, {"x": "", "y": "c"}],
-          "$default": {"x": "a", "y": "b"}
-        }
-      ],
-      [
-        expressRouteSchema_1,
-        withValueFreeStart,
-        {
-          "$default": {"x": "b", "y": "c"},
-          "matchAll": true
-        }
-      ],
-      [
-        expressRouteSchema_2,
-        withValueFree,
-        {
-          "$default": {"x": "a", "y": "c"},
-          "matchAll": true
-        }
-      ],
-    ]
+    ][]
   
     for (const [schema, params, expectation] of cases)
       describe(`${schema} @ ${JSON.stringify(params)}`, () => {
@@ -111,7 +62,7 @@ describe(instance, () => {
       })
   })
   describe('matchAll', () => {
-    const parser = schemaParser(expressRouteCatcher, expressRouteSchema_1, withValueFree)
+    const parser = schemaParser(expressRouteCatcher, expressRoute.schemas[0], withValueFree)
     it('matchAll', () => expect(
       parse(parser, instance, 'g', "matchAll")
     ).toStrictEqual([
@@ -195,7 +146,7 @@ describe('research', () => {
   describe('reshape', () => {
     const parser = regexpize(schema2regStr(
       expressRouteCatcher,
-      expressRouteSchema_2
+      expressRoute.schemas[1]
     ))
     describe('not match', () => {
       it('replace', () => expect(
@@ -206,7 +157,7 @@ describe('research', () => {
     })    
     it('idfn', () => expect(
       instance.replace(parser,
-        schema2replace(expressRouteCatcher, expressRouteSchema_2, withValueFree)
+        schema2replace(expressRouteCatcher, expressRoute.schemas[1])
       )
     ).toBe(instance))
     it('1', () => expect(
