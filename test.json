@@ -16,6 +16,14 @@
       ],
       [
         ":x/:y",
+        false,
+        {
+          "$default": {"x": "a/b", "y": "c"},
+          "matchAll": true
+        }
+      ],      
+      [
+        ":x/:y",
         {"valuePattern": "[^/]*"},
         {
           "matchAll": [],
@@ -26,7 +34,16 @@
         ":x/:y",
         {"valuePattern": "[^/]*", "freeStart": true, "freeEnd": true},
         {
+          "matchAll": [{"x": "a", "y": "b"}],
+          "$default": {"x": "a", "y": "b"}
+        }
+      ],
+      [
+        ":x/:y",
+        {"valuePattern": "[^/]*", "freeStart": true, "freeEnd": true, "global": true},
+        {
           "matchAll": [{"x": "a", "y": "b"}, {"x": "", "y": "c"}],
+          "match": true,
           "$default": {"x": "a", "y": "b"}
         }
       ],
@@ -59,6 +76,7 @@
     }
   },
   "definitions": {
+    "instance": "a/b/c",
     "withValue": {"valuePattern": "[^/]*"},
     "withValueFreeStart": {"valuePattern": "[^/]*", "freeStart": true},
     "withValueFree": {"valuePattern": "[^/]*", "freeStart": true, "freeEnd": true}

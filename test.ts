@@ -4,9 +4,8 @@ import regexpize from './regexpize'
 import { schema2regStr, schema2replace } from './schemaReg'
 import {expressRoute, templateLiteral, definitions} from "./test.json"
 
-const instance = "a/b/c"
+const {withValueFree, instance} = definitions
 , expressRouteCatcher = keyReger(expressRoute.keyParameters)
-, {withValueFree} = definitions
 
 describe(instance, () => {
   describe('template literal', () => {
@@ -38,26 +37,27 @@ describe(instance, () => {
     for (const [schema, params, expectation] of cases)
       describe(`${schema} @ ${JSON.stringify(params)}`, () => {
         for (const method of methods) { 
-          const expected = method === "matchAll" && method in expectation
-          ? (
-            expectation[method] === true
+          const expected = !(method in expectation)
+          ? expectation.$default
+          : (
+            method === "matchAll"
+            && expectation[method] === true
             ? [expectation.$default]
+            //@ts-ignore
             : expectation[method]
           )
-          : expectation.$default
-
-          it(method, () => {
-            expect(
+          it(method, () => expect(
               parse(
                 schemaParser(expressRouteCatcher, schema, params),
                 instance,
-                method === "matchAll" && 'g',
+                //@ts-ignore
+                params,
                 method
               )
             ).toStrictEqual(
               expected
             )            
-          })
+          )
         }
       })
   })

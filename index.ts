@@ -37,7 +37,7 @@ function parse(
   switch (method) {
     case "match":
       const matchReturn = instance.match(p)
-      return matchReturn && {...matchReturn.groups}
+      return matchReturn && (matchReturn.groups ? {...matchReturn.groups} : true)
     case "exec":
       const execReturn = p.exec(instance)
       return execReturn && {...execReturn.groups}  
