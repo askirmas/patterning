@@ -2,6 +2,7 @@ import { regexpize } from "./regexpize"
 
 
 describe('tag as backreference', () => {
+  // https://2ality.com/2017/05/regexp-named-capture-groups.html#backreferences
   const key = "tag"
   , keyPattern = '[a-z]+'
   , valuePattern = "[^<]+"
@@ -20,7 +21,34 @@ describe('tag as backreference', () => {
     "tag": "title"
   }))
   it('false', () => expect(exec("<title>abc</titl>", catcher)).toBe(null))
-
+  it('html array', () => expect(
+    [
+      ..."X<title>abc</title>Y<b>b</b>Z"
+      .matchAll(
+        /<(?<tag>[a-z]+)>(?<text>[^<]*)<\/\k<tag>>/g
+      )
+    ].map(({groups}) => ({...groups}))
+  ).toStrictEqual([
+    {tag: "title", text: "abc"},
+    {tag: "b", text: "b"}
+  ]))
+  it('html tags', () => expect(
+    [
+      ..."X<title>abc</title>Y<b>b</b>Z"
+      .matchAll(/[^<]*<(?<tag>[a-z]+)>.*<\/\1>[^<]*/g)
+    ].map(({groups}) => ({...groups}))
+  ).toStrictEqual([{tag: "title"}, {tag: "b"}]))
+  it('html trick', () => expect(
+    () => "X<title>abc</title>Y<b>b</b>Z"
+      .matchAll(/[^<]*<([a-z]+)>(?<\1>.*)<\/\1[^<]*/g)
+  ).toThrowError(SyntaxError))
+  it('html', () => expect(
+    [
+      ..."X<title>abc</title>Y<b>b</b>Z"
+      .matchAll(/^([^<]*<(?<tag>[a-z]+)>(.*)<\/\k<tag>>[^<]*)*$/g)
+    ].map(({groups, ...etc}) => ({...etc, groups: {...groups}}))
+    [0].groups
+  ).toStrictEqual({tag: "b"}))
 })
 
 
