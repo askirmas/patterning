@@ -58,3 +58,79 @@ describe('research', () => {
     ).toStrictEqual({tag: "b"}))
   })
 })
+
+describe('methods and globals', () => {
+  const nulls = {
+    execs: [
+      null,
+      null,
+      null
+    ],
+    match: null,
+    matchAll: []
+  }
+  , onlyA = {
+    execs: [
+      ["a"],
+      ["a"],
+      ["a"]
+    ],
+    match: ["a"],
+    matchAll: [["a"]]
+  }
+  , cases = [
+    [/\w/, "/", nulls],
+    [/\w/g, "/", nulls],
+    [/\w/, "a", onlyA],
+    [/\w/, "a/b", onlyA],
+    
+    [/\w/g, "a", {
+      execs: [
+        ["a"],
+        null,
+        ["a"]
+      ],
+      match: ["a"],
+      matchAll: [["a"]]
+    }],
+
+    [/\w/g, "a/b", {
+      execs: [
+        ["a"],
+        ["b"],
+        null
+      ],
+      match: ["a", "b"],
+      matchAll: [["a"], ["b"]]
+    }],
+
+
+  ] as const
+  for (const [reg, str, {execs, match, matchAll}] of cases)
+    describe(`${str} -> ${reg}`, () => {
+
+      /** Shallow decomposition to Array of RegExp Iterators */
+      function de(s: any) {
+        return s && (
+          Array.isArray(s)
+          ? [...s]
+          : [...s].map(s => [...s])
+        )
+      }
+
+      function match2all(match?: Readonly<string[]|null>) {
+        return !match ? [] : match.map(x => [x])
+      }
+
+      describe('execs', () => {
+        const {length} = execs
+        for (let i = 0; i < length; i++)
+        it(`call #${i + 1}`, () => expect(de(reg.exec(str))).toStrictEqual(execs[i]))
+      })
+      describe('matches', () => {
+        it('match', () => expect(de(str.match(reg))).toStrictEqual(match))
+        it('matchAll', () => expect(de(str.matchAll(reg))).toStrictEqual(matchAll))
+        it('derive', () => expect(de(str.matchAll(reg))).toStrictEqual(match2all(match)))
+      })
+  })
+})
