@@ -101,6 +101,7 @@ describe('reshape', () => {
 
   })
 })
+
 describe('plural', () => {
   const parser = new Parser({
     "prefix": ":",
