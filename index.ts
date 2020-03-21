@@ -35,10 +35,10 @@ function parse(
   const p = regexpize(parser, flags)
 
   switch (method) {
-    case "exec":
+    case "match":
       const matchReturn = instance.match(p)
       return matchReturn && {...matchReturn.groups}
-    case "match":
+    case "exec":
       const execReturn = p.exec(instance)
       return execReturn && {...execReturn.groups}  
     case "matchAll": 
