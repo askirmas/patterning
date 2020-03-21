@@ -10,7 +10,7 @@ type Params = Parameters<typeof keyReger>[0] & SchemaParams
   freeStart: true,
   freeEnd: true
 }*/
-
+//TODO: Callable class https://hackernoon.com/creating-callable-objects-in-javascript-d21l3te1 https://stackoverflow.com/questions/12769636/how-to-make-a-class-implement-a-call-signature-in-typescript
 class Parser {
   _keyReg: RegExp
   _params: Params
