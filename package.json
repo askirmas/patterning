@@ -1,6 +1,6 @@
 {
   "name": "patterning",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "oop.ts",
   "scripts": {
