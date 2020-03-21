@@ -1,7 +1,7 @@
 import {Parser} from "./oop"
 import {definitions, templateLiteral, expressRoute} from './test.json'
 import { SchemaParameters } from "./schemaReg"
-import { methods } from "."
+import { methods } from "./fn"
 
 const {instance} = definitions
 

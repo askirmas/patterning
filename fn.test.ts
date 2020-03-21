@@ -1,5 +1,5 @@
 
-import {keyReger, schemaParser, parse, methods, SchemaParameters} from '.'
+import {keyReger, schemaParser, parse, methods, SchemaParameters} from './fn'
 import regexpize from './regexpize'
 import { schema2regStr, schema2replace } from './schemaReg'
 import {expressRoute, templateLiteral, definitions} from "./test.json"

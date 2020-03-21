@@ -1,11 +1,12 @@
 {
   "name": "patterning",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "oop.ts",
   "scripts": {
     "postinstall": "git config include.path ../.gitconfig; git-hooks-wrapper init; exit 0",
-    "test": "jest"
+    "test": "jest",
+    "publish": "np"
   },
   "repository": {
     "type": "git",
