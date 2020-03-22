@@ -1,12 +1,11 @@
 import regExpFlaging from './flags.json'
 import {RegExpFlagsObject} from "./definitions"
 
-type RegExpFlags = RegExpFlagsObject|string|null|undefined|false
+export type RegExpFlags = RegExpFlagsObject|string|null|undefined|false
 
 export default regexpize
 export {
-  regexpize,
-  RegExpFlags
+  regexpize
 }
 
 /** @returns `source` on strict `flags` equilty */

@@ -42,7 +42,8 @@ class Parser {
   replace(instance: string, parser: Parser) {
     for (const schema of this._schemas.values())
       if (schema.test(instance))
-        //TODO: Hide...
+        //TODO: Privatize parser._schemas
+        //TODO Add 1-to-1 replacement map 
         for (const recepient of parser._schemas.values()) {
           const $result = schema.replace(instance, recepient)
           if ($result)

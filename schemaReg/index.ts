@@ -1,13 +1,15 @@
 import $default from './default.json'
-import {SchemaParameters, KeyParameters} from "./definitions"
+import {SchemaParameters as SchemaParameters_, KeyParameters as KeyParameters_} from "./definitions"
+export type SchemaParameters = SchemaParameters_
+export type KeyParameters = KeyParameters_
 
-const escapePattern = /[\\{}$[\]()?+*|\.\-\^]/g
+//TODO: Unnecessary escape character: \^.eslint(no-useless-escape)
+const escapePattern = /[\\{}$[\]()?+*|.\-\^]/g
 , {valuePattern: defaultValuePattern, keyPattern: defaultKeyPattern} = $default
 
 export {
   schema2regStr, schema2replace, 
-  keyReger,
-  SchemaParameters, KeyParameters
+  keyReger
 }
 
 function schema2regStr(

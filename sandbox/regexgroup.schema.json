@@ -1,0 +1,88 @@
+{
+  "properties": {
+    "obj2path": {
+      "additionalProperties": {
+        "$ref": "#/definitions/obj2path"
+      },
+      "items": {
+        "$ref": "#/definitions/obj2path"
+      }
+    },
+    "path2obj": {
+      "additionalProperties": {
+        "$ref": "#/definitions/path2obj"
+      },
+      "items": {
+        "$ref": "#/definitions/path2obj"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "group": {
+          "type": "string", 
+          "default": "key"
+        },
+        "valuePattern":{
+          "type": "string", 
+          "default": "[^\\/]*"
+        },
+        "prefix": {
+          "type": "string", 
+          "default": ":"
+        },
+        "pattern": {
+          "type": "string", 
+          "default": "[\\w0-9]+"
+        },
+        "postfix": {
+          "type": "string", 
+          "default": ""
+        }
+      }
+    },
+    "obj2path": {
+      "title": "obj2path",
+      "properties": {
+        "arguments": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": [
+            {"type": "object"},
+            {"type": "string"},
+            {
+              "$ref": "#/definitions/Options"
+            }
+          ]
+        },
+        "return": {
+          "type": "string"
+        }
+      }
+    },
+    "path2obj": {
+      "properties": {
+        "arguments": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "items": [
+            {"type": "string"},
+            {"type": "string"},
+            {
+              "$ref": "#/definitions/Options"
+            }            
+          ]
+        },
+        "return": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

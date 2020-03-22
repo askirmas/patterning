@@ -1,0 +1,88 @@
+{
+  "obj2path": [
+    {  
+      "arguments": [
+        {"id": "123A2354", "command": "keywords"},
+        "/rules/:id/:command"
+      ],
+      "matcher": "toBe",
+      "return": "/rules/123A2354/keywords"
+    },
+    {
+      "arguments": [
+        {"id": "123A2354", "command": "keywords"},
+        "/rules/{id}/{command}",
+        {
+          "prefix": "{",
+          "postfix": "}"
+        }
+      ],
+      "matcher": "toBe",
+      "return": "/rules/123A2354/keywords"
+    },
+    {
+      "arguments": [
+        {"id": "123A2354", "command": "keywords"},
+        "/rules/{id}/{command}",
+        {
+          "prefix": "{",
+          "postfix": "}"
+        }
+      ],
+      "matcher": "toBe",
+      "return": "/rules/123A2354/keywords"
+    }
+
+  ],
+  "path2obj": {
+    "empty": {
+      "arguments": [
+        "/rules/123A2354/keywords",
+        "/rules/:id/:command",
+        {
+          "prefix": "{",
+          "postfix": "}"  
+        }
+
+      ],
+      "matcher": "toBe"
+    },
+    "first": {
+      "arguments": [
+        "/rules/123A2354/keywords",
+        "/rules/:id/:command"
+      ],
+      "matcher": "toEqual",
+      "return": {"id": "123A2354", "command": "keywords"}
+    },
+    "own options": {
+      "arguments": [
+        "/rules/123A2354/keywords",
+        "/rules/{id}/{command}",
+        {
+          "prefix": "{",
+          "postfix": "}"  
+        }
+
+      ],
+      "matcher": "toStrictEqual",
+      "return": {"command": "keywords", "id": "123A2354"}
+    },
+    "meta rb": {
+      "arguments": [
+        "$meta:properties:title:default",
+        "{gid}:properties:{property}:{controller}",
+        {
+          "prefix": "{",
+          "postfix": "}"  
+        }
+      ],
+      "matcher": "toStrictEqual",
+      "return": {
+        "gid": "$meta",
+        "property": "title",
+        "controller": "default"
+      }
+    }
+  }
+}
