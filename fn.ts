@@ -1,13 +1,13 @@
-import { keyReger, schema2regStr, KeyParameters, SchemaParameters } from "./schemaReg"
+import { keyReger, schema2regStr, KeyParameters as KeyParameters_, SchemaParameters as SchemaParameters_ } from "./schemaReg"
 import regexpize from "./regexpize"
 
 //TODO: add .text/.search/... 
 const methods = ["exec", "match", "matchAll"] as const
-
+export type KeyParameters = KeyParameters_
+export type SchemaParameters = SchemaParameters_
 export {
   keyReger, schemaParser, parse, regexpize,
-  methods,
-  KeyParameters, SchemaParameters
+  methods
 }
 
 //TODO: apply to parser other schemaParams
