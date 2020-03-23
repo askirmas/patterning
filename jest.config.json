@@ -10,6 +10,9 @@
           "statements": 100
       }
   },
+  "testPathIgnorePatterns": [
+    "<rootDir>/sandbox/"
+  ],
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(t|j)sx?$",
   "transform": {
       "^.+\\.[tj]sx?$": "ts-jest"
