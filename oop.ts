@@ -71,6 +71,7 @@ class Parser {
           return schema.replace(instance)
     return
   }
+  //TODO: place() 
 
   clear() {
     return this._schemas.clear()
@@ -122,9 +123,14 @@ class Schema {
     const execReturn = this._parser.exec(instance)
     return execReturn && {...execReturn.groups}  
   }
+
   test(instance: string) {
     return this._parser.test(instance)
   }
+  /*check(instance: string) {
+    return this._receiver?.test(instance)
+  }*/
+
   replace(instance: string, schema: Schema|undefined = this._receiver) {
     if (schema === undefined)
       return null
