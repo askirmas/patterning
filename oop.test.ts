@@ -182,7 +182,7 @@ describe(Parser.name, () => {
 
 describe(Schema.name, () => {
   const schema0 = new Schema(keyReger(express2), routes[0], express2, routes[1])
-  , schema1 = new Schema(keyReger(express2), routes[1], express2, schema0)
+  , schema1 = new Parser(express2).schema(routes[1], express2, schema0)
 
   describe('.replace', () => {
     it('null', () => expect(new Schema(keyReger(express2), routes[0], express2).replace(urls[0])).toBe(null))
