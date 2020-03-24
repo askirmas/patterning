@@ -22,6 +22,7 @@ class Parser {
     this._params = params
   }
   
+  /** @deprecated */
   schema(schema: string/*TODO: |RegExp|Schema*/, params?: SchemaParams, receiver?: string|Schema) {
     const schemas = this._schemas
     /*, {valuePattern} = params
@@ -30,6 +31,20 @@ class Parser {
     if (params || !schemas.has(schema))
       schemas.set(schema, new Schema(this._keyReg, schema, params || this._params, receiver)) 
     return this._schemas.get(schema)!
+  }
+
+  add(...schemas: (string|[string, string?]|Record<string, string|undefined>)[]) {
+    for (const schema of schemas) {
+      const isArray = Array.isArray(schema)
+      , s = Array.isArray(schema) ? schema[0] : schema
+      , r = isArray ? schema[1] : undefined
+      if (typeof s === "string")
+        this.schema(s, undefined, r)
+      else
+        for (const k in s)
+          this.schema(k, undefined, s[k])          
+    }
+    return this
   }
 
   match(instance: string) {
@@ -126,5 +141,6 @@ class Schema {
 export default Parser
 export {
   Parser,
+  /** @deprecated */
   Schema
 }

@@ -15,7 +15,7 @@ describe(Parser.name, () => {
   describe(`${instance} @ exec, match, matchAll`, () => {
     describe('templateLiteral', () => {
       const {schema, expectation} = templateLiteral.suite
-      it(schema, () => expect(templateLiteralParser.schema(schema).match(instance)).toStrictEqual(expectation)
+      it(schema, () => expect(templateLiteralParser.add(schema).match(instance)).toStrictEqual(expectation)
       )
     })
     describe("expressRoute", () => {
@@ -52,7 +52,11 @@ describe(Parser.name, () => {
 
   describe('reshape', () => {
     const parser = new Parser({...expressRoute.keyParameters, valuePattern: "[\\w\\-]+"}) 
-
+    parser.add({
+      [routes[0]]: routes[1]
+    }).add([
+      routes[1], routes[0]
+    ])
     describe("keys coincide", () => {
       for (const ri in routes)
         for (const ui in urls) {
