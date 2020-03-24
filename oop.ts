@@ -22,13 +22,13 @@ class Parser {
     this._params = params
   }
   
-  schema(schema: string/*TODO: |RegExp|Schema*/, params?: SchemaParams) {
+  schema(schema: string/*TODO: |RegExp|Schema*/, params?: SchemaParams, receiver?: string|Schema) {
     const schemas = this._schemas
     /*, {valuePattern} = params
     , opts = {valuePattern, ...free}*/
 
     if (params || !schemas.has(schema))
-      schemas.set(schema, new Schema(this._keyReg, schema, params || this._params)) 
+      schemas.set(schema, new Schema(this._keyReg, schema, params || this._params, receiver)) 
     return this._schemas.get(schema)!
   }
 
