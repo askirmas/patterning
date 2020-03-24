@@ -86,13 +86,17 @@ describe(Parser.name, () => {
                   parser.schema(route)
                 )
               ).toBe(url))
-              it('replaced', () => expect(
+              it('replaced from arg', () => expect(
                 parser.schema(route)
                 .replace(
                   url,
                   parser.schema(nextRoute)
                 )
               ).toBe(nextUrl))
+              it('replaced from constructor', () => expect(
+                parser.replace(url)
+              ).toBe(nextUrl))
+
             }
           })
         }
@@ -159,7 +163,7 @@ describe(Parser.name, () => {
       })
     })
 
-    describe('.replace', () => {
+    describe('.replace with recepient', () => {
       const recepient = new Parser({
         "prefix": "[",
         "postfix": "]",

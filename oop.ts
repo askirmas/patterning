@@ -28,16 +28,19 @@ class Parser {
     /*, {valuePattern} = params
     , opts = {valuePattern, ...free}*/
 
+    //TODO: Receiver could change
     if (params || !schemas.has(schema))
       schemas.set(schema, new Schema(this._keyReg, schema, params || this._params, receiver)) 
+    
     return this._schemas.get(schema)!
   }
 
-  add(...schemas: (string|[string, string?]|Record<string, string|undefined>)[]) {
-    for (const schema of schemas) {
+  add(..._: (string|[string, string?]|Record<string, string|undefined>)[]) {
+    for (const schema of arguments) {
       const isArray = Array.isArray(schema)
       , s = Array.isArray(schema) ? schema[0] : schema
       , r = isArray ? schema[1] : undefined
+      
       if (typeof s === "string")
         this.schema(s, undefined, r)
       else
@@ -54,16 +57,18 @@ class Parser {
     return
   }
 
-  replace(instance: string, parser: Parser) {
+  replace(instance: string, parser?: Parser) {
     for (const schema of this._schemas.values())
       if (schema.test(instance))
         //TODO: Privatize parser._schemas
-        //TODO Add 1-to-1 replacement map 
-        for (const recepient of parser._schemas.values()) {
-          const $result = schema.replace(instance, recepient)
-          if ($result)
-            return $result
-        }
+        if (parser)
+          for (const recepient of parser._schemas.values()) {
+            const $result = schema.replace(instance, recepient)
+            if ($result)
+              return $result
+          }
+        else
+          return schema.replace(instance)
     return
   }
 
@@ -90,6 +95,7 @@ class Schema {
       keyReg,
       schema
     )
+    // TODO: check groups.keys coincide with regexp: <group>|'group'|...
     if (receiver !== undefined)
       this._receiver
       = typeof receiver === 'string'
@@ -97,8 +103,8 @@ class Schema {
       : receiver instanceof Schema
       ? receiver
       : undefined
-    }
-
+  }
+    
   get replacer() {
     return this._replacer
   }
@@ -122,7 +128,7 @@ class Schema {
   replace(instance: string, schema: Schema|undefined = this._receiver) {
     if (schema === undefined)
       return null
-
+    
     const $return = this._parser.test(instance)
     && instance.replace(this._parser, schema.replacer)
     //TODO: order escaping/unescaping
