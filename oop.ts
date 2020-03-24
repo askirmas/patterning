@@ -60,8 +60,9 @@ class Parser {
 class Schema {
   _parser: RegExp
   _replacer: string
+  _receiver: Schema|undefined
 
-  constructor(keyReg: RegExp, schema: string, params: SchemaParams) {
+  constructor(keyReg: RegExp, schema: string, params: SchemaParams, receiver?: string|Schema) {
     this._parser = regexpize(
       schema2regStr(
         keyReg,
@@ -74,7 +75,14 @@ class Schema {
       keyReg,
       schema
     )
-  }
+    if (receiver !== undefined)
+      this._receiver
+      = typeof receiver === 'string'
+      ? new Schema(keyReg, receiver, params) 
+      : receiver instanceof Schema
+      ? receiver
+      : undefined
+    }
 
   get replacer() {
     return this._replacer
@@ -96,7 +104,10 @@ class Schema {
   test(instance: string) {
     return this._parser.test(instance)
   }
-  replace(instance: string, schema: Schema) {
+  replace(instance: string, schema: Schema|undefined = this._receiver) {
+    if (schema === undefined)
+      return null
+
     const $return = this._parser.test(instance)
     && instance.replace(this._parser, schema.replacer)
     //TODO: order escaping/unescaping
