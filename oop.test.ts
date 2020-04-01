@@ -186,6 +186,15 @@ describe(Parser.name, () => {
       }
     })
   })
+
+  describe('flush exception', () => {
+    const parser = new Parser({prefix: ":", postfix: ""}).add({
+      "system:system": null,
+      ":common": './:common'
+    })
+    it('good', () => expect(parser.replace('my_folder')).toBe('./my_folder'))
+    it('bad', () => expect(parser.replace('system_folder')).toBe(null))
+  })
 })
 
 describe(Schema.name, () => {
@@ -193,8 +202,8 @@ describe(Schema.name, () => {
   , schema1 = new Parser(express2).schema(routes[1], express2, schema0)
 
   describe('.replace', () => {
-    it('null', () => expect(new Schema(keyReger(express2), routes[0], express2).replace(urls[0])).toBe(null))
-    it('null', () => expect(new Schema(keyReger(express2), routes[0], express2, 123 as unknown as string).replace(urls[0])).toBe(null))
+    it('null', () => expect(new Schema(keyReger(express2), routes[0], express2).replace(urls[0])).toBe(undefined))
+    it('null with receiver', () => expect(new Schema(keyReger(express2), routes[0], express2, 123 as unknown as string).replace(urls[0])).toBe(null))
     it('0', () => expect(schema0.replace(urls[0])).toBe(urls[1]))
     it('1', () => expect(schema1.replace(urls[1])).toBe(urls[0]))
   })

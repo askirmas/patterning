@@ -23,7 +23,7 @@ class Parser {
   }
   
   /** @deprecated */
-  schema(schema: string/*TODO: |RegExp|Schema*/, params?: SchemaParams, receiver?: string|Schema) {
+  schema(schema: string/*TODO: |RegExp|Schema*/, params?: SchemaParams, receiver?: null|string|Schema) {
     const schemas = this._schemas
     /*, {valuePattern} = params
     , opts = {valuePattern, ...free}*/
@@ -35,8 +35,8 @@ class Parser {
     return this._schemas.get(schema)!
   }
 
-  add(..._: (string|[string, string?]|Record<string, string|undefined>)[]) {
-    for (const schema of arguments) {
+  add(...args: (string|[string, (null|string)?]|Record<string, null|string|undefined>)[]) {
+    for (const schema of args) {
       const isArray = Array.isArray(schema)
       , s = Array.isArray(schema) ? schema[0] : schema
       , r = isArray ? schema[1] : undefined
@@ -81,9 +81,9 @@ class Parser {
 class Schema {
   _parser: RegExp
   _replacer: string
-  _receiver: Schema|undefined
+  _receiver: Schema|undefined|null
 
-  constructor(keyReg: RegExp, schema: string, params: SchemaParams, receiver?: string|Schema) {
+  constructor(keyReg: RegExp, schema: string, params: SchemaParams, receiver?: null|string|Schema) {
     this._parser = regexpize(
       schema2regStr(
         keyReg,
@@ -103,7 +103,7 @@ class Schema {
       ? new Schema(keyReg, receiver, params) 
       : receiver instanceof Schema
       ? receiver
-      : undefined
+      : null
   }
     
   get replacer() {
@@ -131,10 +131,9 @@ class Schema {
     return this._receiver?.test(instance)
   }*/
 
-  replace(instance: string, schema: Schema|undefined = this._receiver) {
-    if (schema === undefined)
-      return null
-    
+  replace(instance: string, schema: null|Schema|undefined = this._receiver) {
+    if (!schema)
+      return schema    
     const $return = this._parser.test(instance)
     && instance.replace(this._parser, schema.replacer)
     //TODO: order escaping/unescaping
