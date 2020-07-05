@@ -1,4 +1,4 @@
-import {schema2regStr, schema2replace, keyReger} from "."
+import {schema2regStr, schema2replace, keyReger} from "./index"
 import $default from './default.json'
 
 const params = {prefix: "${", postfix: "}"}

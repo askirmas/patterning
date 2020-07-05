@@ -1,4 +1,4 @@
-import {regexpize} from '.'
+import {regexpize} from "./index"
 const str = 'asd';
 [
   null,
